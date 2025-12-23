@@ -1,0 +1,25 @@
+dataset:
+  tpch_scale: 1.0            # keep small so runs are quick
+
+runs_per_case: 15             # repetitions per query×format×factor; lower for speed, higher for tighter P50/P95
+
+formats:                     # file/record formats to evaluate
+  - parquet
+  - csv
+  - ndjson
+
+selectivities:               # fraction of rows selected (computed via quantiles)
+  - 0.01
+  - 0.10
+  - 0.50
+
+parquet_variants:
+  row_group_mb: [8, 32, 128] # target sizes; approximated via rows/group heuristic
+  compression: ["NONE", "ZSTD"]
+
+queries:
+  q1_filter_agg: true        # selective filter + aggregation
+  q1_nosarg: true            # non-sargable variant (disables pushdown)
+  q2_projection_narrow: true # 3 columns
+  q2_projection_wide: true   # many columns
+  q3_scan_group: true        # baseline group-by
